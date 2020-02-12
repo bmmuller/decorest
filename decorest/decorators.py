@@ -235,10 +235,17 @@ class HttpMethodDecorator(object):
                 if args_dict.get(form_arg):
                     form_value = args_dict[form_arg]
                     form_parameters[form_param] = form_value
+                    
+        header_parameters_decor = get_decor(func, 'header')
+        if header_parameters_decor:
+            for header_arg, header_param in iteritems(header_parameters_decor):
+                if args_dict.get(header_arg):
+                    header_value = args_dict[header_arg]
+                    header_parameters_decor[header_param] = header_value
 
         header_parameters = merge_dicts(
             get_decor(rest_client.__class__, 'header'),
-            get_decor(func, 'header'))
+            header_parameters_decor)
 
         # Get body content from positional arguments if one is specified
         # using @body decorator
